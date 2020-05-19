@@ -1,13 +1,31 @@
 import React, { Component } from 'react';
 import './App.css';
 import Person from './Person/Person';
+//import Radium, { StyleRoot } from 'radium';
+import styled from 'styled-components';
+
+
+// ${} allows you dinamicaly to insert something 
+const StyledButton = styled.button`
+  background-color: ${props => props.alt ? 'red' : 'green'};
+  color: white;
+  font: inherit;
+  border: 1px solid blue;
+  padding: 8px;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: ${props => props.alt ? 'salmon' : 'lightgreen'};
+    color: black;
+  }
+`;
 
 class App extends Component {
   state = {
     persons: [
-      {id: 'wed', name: 'Max', age: 28 },
-      {id: 'wed2', name: 'Manu', age: 29 },
-      {id: 'wed1', name: 'Maria', age: 30 }
+      { id: 'wed', name: 'Max', age: 28 },
+      { id: 'wed2', name: 'Manu', age: 29 },
+      { id: 'wed1', name: 'Maria', age: 30 }
     ],
     showPersons: false
   }
@@ -22,7 +40,7 @@ class App extends Component {
     const persons = [...this.state.persons]
     //will remove 1 element from the array
     persons.splice(personIndex, 1);
-    this.setState({persons: persons})
+    this.setState({ persons: persons })
   }
 
 
@@ -30,7 +48,7 @@ class App extends Component {
     // will hold the index of the person in the array 
     // for which the Ids are equal
     //will return true or false
-    const personIndex = this.state.persons.findIndex(p  => {
+    const personIndex = this.state.persons.findIndex(p => {
       return p.id === id;
     });
 
@@ -40,7 +58,7 @@ class App extends Component {
       ...this.state.persons[personIndex]
     };
 
-    
+
     person.name = event.target.value;
 
     const persons = [...this.state.persons];
@@ -55,13 +73,8 @@ class App extends Component {
   }
 
   render() {
-    const style = {
-      backgroundColor: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
-    }
+    //it was transfered into StyledButton
+    //  
 
     let persons = null;
 
@@ -69,24 +82,40 @@ class App extends Component {
       persons = (
         <div>
           {this.state.persons.map((person, index) => {
-             return <Person 
-             click={() => this.deletePersonHandler(index)}
-             name={person.name} 
-             age={person.age}
-             key={person.id}
-            changed={(event) => this.nameChangedHandler(event, person.id)} />
+            return <Person
+              click={() => this.deletePersonHandler(index)}
+              name={person.name}
+              age={person.age}
+              key={person.id}
+              changed={(event) => this.nameChangedHandler(event, person.id)} />
           })}
         </div>
       );
+      // style.backgroundColor = 'red';
+      // style[':hover'] = {
+      //   backgroundColor: 'salmon',
+      //   color: 'black'
+      // }
     }
+
+    let classes = [];
+    if (this.state.persons.length <= 2) {
+      classes.push('red');
+    }
+    if (this.state.persons.length <= 1) {
+      classes.push('bold');
+    }
+
     return (
-      <div className="App">
-        <h1>Hi, I am a React App</h1>
-        <button
-          style={style}
-          onClick={this.togglePersonsHandler}>Toggle Persons</button>
-        {persons }
-      </div>
+      
+        <div className="App">
+          <h1>Hi, I am a React App</h1>
+          <p className={classes.join(' ')}>Thsi is really  working!!</p>
+          <StyledButton alt={this.state.showPersons}
+            onClick={this.togglePersonsHandler}>Toggle Persons
+            </StyledButton>
+          {persons}
+        </div>
     );
   }
 }
